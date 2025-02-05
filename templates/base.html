@@ -14,17 +14,15 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
 
     <div class="navbar-nav">
-      <a class="nav-item nav-link" href="{{ url_for('index') }}">Home</a>
-      <a class="nav-item nav-link" href="{{ url_for('puppies.add') }}">Add Pup</a>
-      <a class="nav-item nav-link" href="{{ url_for('puppies.list') }}">List of Pups</a>
-      <a class="nav-item nav-link" href="{{ url_for('puppies.delete') }}">Delete Pup</a>
-      <a class="nav-item nav-link" href="{{ url_for('owners.add') }}">Add Owner</a>
+      <a class="nav-item nav-link" href="#">Home</a>
+      <a class="nav-item nav-link" href="#">Add Pup</a>
+      <a class="nav-item nav-link" href="#">List of Pups</a>
+      <a class="nav-item nav-link" href="#">Delete Pup</a>
+      <a class="nav-item nav-link" href="#">Add Owner</a>
     </div>
 
 </nav>
-
     {% block content %}
-
     {% endblock %}
   </body>
 </html>
