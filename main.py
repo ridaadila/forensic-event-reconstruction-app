@@ -1,19 +1,14 @@
 import os
+from drain_helper import DrainHelper
 from flask import Flask, render_template, flash, request, redirect, session, url_for # type: ignore
 from flask_wtf import FlaskForm # type: ignore
 from flask_sqlalchemy import SQLAlchemy # type: ignore
 from wtforms import StringField, SubmitField, BooleanField, DateTimeField, RadioField, SelectField # type: ignore
 from wtforms.validators import DataRequired # type: ignore
-import json
-import logging
-import subprocess
-import sys
-import time
-from os.path import dirname
-from drain3 import TemplateMiner
-from drain3.template_miner_config import TemplateMinerConfig
 import pandas as pd # type: ignore
 from datetime import datetime
+
+from forensic_timeline_helper import ForensicTimelineHelper
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -41,186 +36,13 @@ class User(db.Model):
 def index():
     return render_template('home.html')
 
-def clean_abstract_message(text):
-    special_characters = "<>^"
-    
-    cleaned_text = text
-    for char in special_characters:
-        if isinstance(text, str):
-            cleaned_text = cleaned_text.replace(char, "")
-            return cleaned_text
-        else:
-            return "Unknown"
-
-def select_columns_used_for_episode_mining():   
-    base_filename = 'webserver-2019-10-05'
-    df_ori = pd.read_csv(base_filename + '-mapping.csv')
-
-    df_ori['epoch_time'] = None
-    df_ori['cleaned_message'] = None
-
-    # Konversi kolom 'datetime' ke format datetime
-    df_ori['datetime'] = pd.to_datetime(df_ori['datetime'], format='mixed')
-
-    # Mengonversi datetime ke epoch time
-    df_ori['epoch_time'] = df_ori['datetime'].apply(lambda x: int(x.timestamp()))
-
-    df_ori['cleaned_message'] = df_ori['abstract_message'].apply(clean_abstract_message)
-
-    df_ori = df_ori[df_ori['cleaned_message'] != "Unknown"]
-
-    df_ori = df_ori.sort_values(by='datetime')
-
-    columns_to_save = ['datetime', 'epoch_time', 'source', 'cluster_id', 'abstract_message', 'cleaned_message', 'message']
-
-    df_ori.to_csv(base_filename + '-selected_columns.csv', columns=columns_to_save, index=False)
-    df_ori.to_csv(base_filename + '-mapping-edited.csv', columns=['datetime', 'cluster_id', 'source', 'message', 'abstract_message'], index=False)
-
-def convert_forensic_timeline_into_episode_mining_input_format(csv_filename, txt_filename):
-    df = pd.read_csv(csv_filename)
-
-    epoch_time_clusters = df.groupby('epoch_time')['cluster_id'].apply(list).to_dict()
-
-    sorted_epoch_clusters = sorted(epoch_time_clusters.items())
-    result_df = pd.DataFrame(sorted_epoch_clusters, columns=['epoch_time', 'cluster_id'])
-
-    result_df['cluster_id'] = result_df['cluster_id'].apply(lambda x: ' '.join(map(str, x)))
-    result_df = result_df[['cluster_id', 'epoch_time']]
-
-    result_df.to_csv(txt_filename, sep='|', header=False, index=False)
-
-def filter_forensic_timeline_by_request():
-    input_file = '12-search-sql-injection.csv'
-    output_file = '12-search-sql-injection-fix.csv'
-
-    data = pd.read_csv(input_file)
-
-    data_filtered = data[
-        (data['source_long'] != 'File stat') & 
-        ((data['source'] == 'WEBHIST') | (data['source'] == 'log'))
-    ]
-
-    selected_data = data_filtered[['datetime', 'message']]
-    selected_data_ori = data_filtered[['datetime', 'message', 'source']]
-
-    selected_data['datetime'] = pd.to_datetime(selected_data['datetime'], errors='coerce')
-    selected_data_ori['datetime'] = pd.to_datetime(selected_data_ori['datetime'], errors='coerce')
-
-    selected_data.to_csv(output_file, index=False, header=False)
-    selected_data_ori.to_csv('12-search-sql-injection-original.csv', index=False)
-
-@app.route('/create-event-abstraction')
-def create_event_abstraction_using_drain():
-    filter_forensic_timeline_by_request()
-    logger = logging.getLogger(__name__)
-    logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(message)s')
-
-    in_gz_file = "SSH.tar.gz"
-    base_file_name = "12-search-sql-injection"
-    in_log_file = base_file_name + "-fix.csv"
-    if not os.path.isfile(in_log_file):
-        logger.info(f"Downloading file {in_gz_file}")
-        p = subprocess.Popen(f"curl https://zenodo.org/record/3227177/files/{in_gz_file} --output {in_gz_file}", shell=True)
-        p.wait()
-        logger.info(f"Extracting file {in_gz_file}")
-        p = subprocess.Popen(f"tar -xvzf {in_gz_file}", shell=True)
-        p.wait()
-
-    config = TemplateMinerConfig()
-    config.load(f"{dirname(__file__)}/drain3.ini")
-    config.profiling_enabled = True
-    template_miner = TemplateMiner(config=config)
-
-    line_count = 0
-
-    with open(in_log_file, encoding="utf-8") as f:
-        lines = f.readlines()
-
-    start_time = time.time()
-    batch_start_time = start_time
-    batch_size = 10000
-
-    original_logs = {}
-
-    index_baris = 0
-    for line in lines:
-        line = line.rstrip()
-        tes = line.split(";")
-        line = line.partition(": ")[2]
-        result = template_miner.add_log_message(line)
-        line_count += 1
-        if line_count % batch_size == 0:
-            time_took = time.time() - batch_start_time
-            rate = batch_size / time_took
-            logger.info(f"Processing line: {line_count}, rate {rate:.1f} lines/sec, "
-                        f"{len(template_miner.drain.clusters)} clusters so far.")
-            batch_start_time = time.time()
-
-        if result["change_type"] != "none":
-            result_json = json.dumps(result)
-            logger.info(f"Input ({line_count}): {line}")
-            logger.info(f"Result: {result_json}")
-
-        original_logs[index_baris] = result['cluster_id']
-        index_baris += 1
-
-    sorted_clusters = sorted(template_miner.drain.clusters, key=lambda it: it.size, reverse=True)
-
-    data_result = []
-    result_drain = {}
-
-    for cluster in sorted_clusters:
-        cluster_id = cluster.cluster_id
-        size = cluster.size
-        template = cluster.get_template()
-        line_id_original = [(key+1) for key, value in original_logs.items() if value == cluster_id]
-        line_id_original.sort()
-        line_id_original = ",".join(map(str, line_id_original))
-
-        row = {
-            "cluster_id": cluster_id, 
-            "cluster_size": size,
-            "abstract_message": template,
-            "line_id_original": line_id_original
-        }
-
-        data_result.append(row)
-
-        result_drain[cluster_id] = {
-            "cluster_size": size,
-            "abstract_message": template, 
-        }
-
-    df = pd.DataFrame(data_result)
-    df.to_csv(base_file_name + "-event-abstraction.csv", index=False)
-
-    df_ori = pd.read_csv(base_file_name + '-original.csv')
-    df_ori['cluster_id'] = None 
-    df_ori['abstract_message'] = None 
-
-    for i in range(len(df_ori)):
-        cluster_id_baris = original_logs[i]
-        df_ori['cluster_id'][i] = cluster_id_baris
-
-        abstract_message = result_drain[cluster_id_baris]["abstract_message"]
-
-        if abstract_message == "":
-            abstract_message = df_ori['message'][i]
-
-        df_ori['abstract_message'][i] = abstract_message
-
-    df_ori = df_ori[['datetime', 'cluster_id', 'source', 'message', 'abstract_message']] 
-
-    df_ori.to_csv(base_file_name + "-mapping.csv", index=False)
-
-    print("Prefix Tree:")
-    # print(dict(sorted(original_logs.items())))
-    template_miner.drain.print_tree()
-
-    template_miner.profiler.report(0)
-    return "<p1>Success</p1>"
-
-
+@app.route('/execute')
+def execute():
+    forensic_timeline = ForensicTimelineHelper()
+    forensic_timeline.filter_by_request()
+    drain = DrainHelper()
+    drain.run()
+    return "<p1>Sukses</p1>"
 
 if __name__ == '__main__':
     app.run(debug=True)
