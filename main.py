@@ -40,6 +40,17 @@ class User(db.Model):
 def index():
     return render_template('home.html')
 
+def clean_abstract_message(text):
+    special_characters = "<>^"
+    
+    cleaned_text = text
+    for char in special_characters:
+        if isinstance(text, str):
+            cleaned_text = cleaned_text.replace(char, "")
+            return cleaned_text
+        else:
+            return "Unknown"
+
 def filter_input_timeline_by_request():
     input_file = '12-search-sql-injection.csv'
     output_file = '12-search-sql-injection-fix.csv'
