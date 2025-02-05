@@ -40,8 +40,29 @@ class User(db.Model):
 def index():
     return render_template('home.html')
 
+def filter_input_timeline_by_request():
+    input_file = '12-search-sql-injection.csv'
+    output_file = '12-search-sql-injection-fix.csv'
+
+    data = pd.read_csv(input_file)
+
+    data_filtered = data[
+        (data['source_long'] != 'File stat') & 
+        ((data['source'] == 'WEBHIST') | (data['source'] == 'log'))
+    ]
+
+    selected_data = data_filtered[['datetime', 'message']]
+    selected_data_ori = data_filtered[['datetime', 'message', 'source']]
+
+    selected_data['datetime'] = pd.to_datetime(selected_data['datetime'], errors='coerce')
+    selected_data_ori['datetime'] = pd.to_datetime(selected_data_ori['datetime'], errors='coerce')
+
+    selected_data.to_csv(output_file, index=False, header=False)
+    selected_data_ori.to_csv('12-search-sql-injection-original.csv', index=False)
+
 @app.route('/create-event-abstraction')
 def create_event_abstraction_using_drain():
+    filter_input_timeline_by_request()
     logger = logging.getLogger(__name__)
     logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(message)s')
 
@@ -93,11 +114,6 @@ def create_event_abstraction_using_drain():
 
         original_logs[index_baris] = result['cluster_id']
         index_baris += 1
-
-    # time_took = time.time() - start_time
-    # rate = line_count / time_took
-    # logger.info(f"--- Done processing file in {time_took:.2f} sec. Total of {line_count} lines, rate {rate:.1f} lines/sec, "
-    #             f"{len(template_miner.drain.clusters)} clusters")
 
     sorted_clusters = sorted(template_miner.drain.clusters, key=lambda it: it.size, reverse=True)
 
