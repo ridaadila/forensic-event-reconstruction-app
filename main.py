@@ -13,6 +13,7 @@ from os.path import dirname
 from drain3 import TemplateMiner
 from drain3.template_miner_config import TemplateMinerConfig
 import pandas as pd # type: ignore
+from datetime import datetime
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -75,7 +76,20 @@ def select_columns_used_for_episode_mining():
     df_ori.to_csv(base_filename + '-selected_columns.csv', columns=columns_to_save, index=False)
     df_ori.to_csv(base_filename + '-mapping-edited.csv', columns=['datetime', 'cluster_id', 'source', 'message', 'abstract_message'], index=False)
 
-def filter_input_timeline_by_request():
+def convert_forensic_timeline_into_episode_mining_input_format(csv_filename, txt_filename):
+    df = pd.read_csv(csv_filename)
+
+    epoch_time_clusters = df.groupby('epoch_time')['cluster_id'].apply(list).to_dict()
+
+    sorted_epoch_clusters = sorted(epoch_time_clusters.items())
+    result_df = pd.DataFrame(sorted_epoch_clusters, columns=['epoch_time', 'cluster_id'])
+
+    result_df['cluster_id'] = result_df['cluster_id'].apply(lambda x: ' '.join(map(str, x)))
+    result_df = result_df[['cluster_id', 'epoch_time']]
+
+    result_df.to_csv(txt_filename, sep='|', header=False, index=False)
+
+def filter_forensic_timeline_by_request():
     input_file = '12-search-sql-injection.csv'
     output_file = '12-search-sql-injection-fix.csv'
 
@@ -97,7 +111,7 @@ def filter_input_timeline_by_request():
 
 @app.route('/create-event-abstraction')
 def create_event_abstraction_using_drain():
-    filter_input_timeline_by_request()
+    filter_forensic_timeline_by_request()
     logger = logging.getLogger(__name__)
     logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(message)s')
 
