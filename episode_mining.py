@@ -1,17 +1,16 @@
 from spmf import Spmf # type: ignore
-import numpy as np # type: ignore
 import pandas as pd # type: ignore
 
 class EpisodeMining():
 
-    def run(self, txt_filename, base_filename):
-        minsup = 1
+    def run(self, base_filename, minsup, algo):
+        txt_filename = base_filename + '-event-abstraction-for-episode.txt'
         winlen = 45
-        algo = "MINEPI+"
         output_filename = "output-" + base_filename + "-" + algo + "-minsup-" + str(minsup) + ".txt"
         spmf = Spmf(algo, input_filename=txt_filename,
                     output_filename=output_filename, spmf_bin_location_dir="./", arguments=[minsup, winlen, 0])
         spmf.run()
+        return output_filename
 
     def extract_output_spmf_to_list(self, input_filename):
         df = pd.read_csv(input_filename, header=None)
@@ -66,7 +65,8 @@ class EpisodeMining():
         return list_of_case_id
     
 
-    def create_df_with_case_id(self, csv_filename, base_filename, list_of_traces):
+    def create_df_with_case_id(self, base_filename, list_of_traces):
+        csv_filename = base_filename + '-selected_columns.csv'
         df_ori = pd.read_csv(csv_filename)
         df_ori = df_ori.sort_values(by=['datetime'], ascending=[True])
         cluster_id_list = df_ori['cluster_id'].tolist()

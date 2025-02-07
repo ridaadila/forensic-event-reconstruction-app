@@ -1,0 +1,31 @@
+datetime,cluster_id,source,message,abstract_message
+2023-12-26 00:45:24.831000+00:00,1,WEBHIST,https://www.google.com/?gws_rd=ssl (Google) [count: 1] Host: www.google.com visited from: http://www.google.com/ (www.google.com) (URL not typed directly) Transition: REDIRECT_TEMPORARY,1] Host: www.google.com visited from: <*> (www.google.com) (URL not typed directly) Transition: <*>
+2023-12-26 00:45:24.831000+00:00,1,WEBHIST,https://www.google.com/?gws_rd=ssl (Google) [count: 1] Host: www.google.com visited from: http://www.google.com/ (www.google.com) (URL not typed directly) Transition: REDIRECT_TEMPORARY,1] Host: www.google.com visited from: <*> (www.google.com) (URL not typed directly) Transition: <*>
+2023-12-26 00:45:39.766000+00:00,2,WEBHIST,http://google.com/ (OGPC) Flags: [HTTP only]: False,[HTTP only]: <*>
+2023-12-26 00:45:39.766000+00:00,2,WEBHIST,http://google.com/ (OGPC) Flags: [HTTP only]: False,[HTTP only]: <*>
+2023-12-26 00:45:39.766000+00:00,2,WEBHIST,http://google.com/ (OGPC) Flags: [HTTP only]: False,[HTTP only]: <*>
+2023-12-26 00:45:39.766000+00:00,2,WEBHIST,http://google.com/ (OGPC) Flags: [HTTP only]: False,[HTTP only]: <*>
+2023-12-26 00:45:44.869000+00:00,2,WEBHIST,https://ogs.google.com/ (OTZ) Flags: [HTTP only]: False,[HTTP only]: <*>
+2023-12-26 00:45:44.869000+00:00,2,WEBHIST,https://ogs.google.com/ (OTZ) Flags: [HTTP only]: False,[HTTP only]: <*>
+2023-12-26 00:45:44.869000+00:00,2,WEBHIST,https://ogs.google.com/ (OTZ) Flags: [HTTP only]: False,[HTTP only]: <*>
+2023-12-26 00:45:44.869000+00:00,2,WEBHIST,https://ogs.google.com/ (OTZ) Flags: [HTTP only]: False,[HTTP only]: <*>
+2023-12-26 00:45:45.817000+00:00,1,WEBHIST,https://www.google.com/search?q=how+to+perform+sql+injection+attack&sca_esv=593660335&source=hp&ei=JCKKZa2nJpyQ4-EPxMC0gAc&iflsig=AO6bgOgAAAAAZYowNLiilF7qtRZRa87l8OG8Glw10jwB&ved=0ahUKEwitye3776uDAxUcyDgGHUQgDXAQ4dUDCAk&uact=5&oq=how+to+perform+sql+injection+attack&gs_lp=Egdnd3Mtd2l6IiNob3cgdG8gcGVyZm9ybSBzcWwgaW5qZWN0aW9uIGF0dGFjazIHEAAYgAQYEzIHEAAYgAQYEzIHEAAYgAQYEzIHEAAYgAQYEzIIEAAYFhgeGBMyCBAAGBYYHhgTMggQABgWGB4YEzIIEAAYFhgeGBMyCBAAGBYYHhgTMggQABgWGB4YE0i1ZVDZFVjRWHABeACQAQCYAewHoAH2Y6oBDzAuMS40LjQuMy4yLjguMbgBA8gBAPgBAagCCsICEBAAGAMYjwEY5QIY6gIYjAPCAhAQLhgDGI8BGOUCGOoCGIwDwgIFEAAYgATCAggQLhiABBjUAsICCBAAGIAEGLEDwgILEAAYgAQYsQMYgwHCAgUQLhiABMICBBAAGAPCAggQLhiABBixA8ICBhAAGBYYHsICCRAAGIAEGA0YEw&sclient=gws-wiz (how to perform sql injection attack - Penelusuran Google) [count: 1] Host: www.google.com visited from: https://www.google.com/?gws_rd=ssl (www.google.com) (URL not typed directly) Transition: LINK,1] Host: www.google.com visited from: <*> (www.google.com) (URL not typed directly) Transition: <*>
+2023-12-26 00:45:45.817000+00:00,1,WEBHIST,https://www.google.com/search?q=how+to+perform+sql+injection+attack&sca_esv=593660335&source=hp&ei=JCKKZa2nJpyQ4-EPxMC0gAc&iflsig=AO6bgOgAAAAAZYowNLiilF7qtRZRa87l8OG8Glw10jwB&ved=0ahUKEwitye3776uDAxUcyDgGHUQgDXAQ4dUDCAk&uact=5&oq=how+to+perform+sql+injection+attack&gs_lp=Egdnd3Mtd2l6IiNob3cgdG8gcGVyZm9ybSBzcWwgaW5qZWN0aW9uIGF0dGFjazIHEAAYgAQYEzIHEAAYgAQYEzIHEAAYgAQYEzIHEAAYgAQYEzIIEAAYFhgeGBMyCBAAGBYYHhgTMggQABgWGB4YEzIIEAAYFhgeGBMyCBAAGBYYHhgTMggQABgWGB4YE0i1ZVDZFVjRWHABeACQAQCYAewHoAH2Y6oBDzAuMS40LjQuMy4yLjguMbgBA8gBAPgBAagCCsICEBAAGAMYjwEY5QIY6gIYjAPCAhAQLhgDGI8BGOUCGOoCGIwDwgIFEAAYgATCAggQLhiABBjUAsICCBAAGIAEGLEDwgILEAAYgAQYsQMYgwHCAgUQLhiABMICBBAAGAPCAggQLhiABBixA8ICBhAAGBYYHsICCRAAGIAEGA0YEw&sclient=gws-wiz (how to perform sql injection attack - Penelusuran Google) [count: 1] Host: www.google.com visited from: https://www.google.com/?gws_rd=ssl (www.google.com) (URL not typed directly) Transition: LINK,1] Host: www.google.com visited from: <*> (www.google.com) (URL not typed directly) Transition: <*>
+2023-12-26 00:45:48.610000+00:00,2,WEBHIST,https://google.com/verify (SNID) Flags: [HTTP only]: True,[HTTP only]: <*>
+2023-12-26 00:45:48.610000+00:00,2,WEBHIST,https://google.com/ (NID) Flags: [HTTP only]: True,[HTTP only]: <*>
+2023-12-26 00:45:48.610000+00:00,2,WEBHIST,https://google.com/ (NID) Flags: [HTTP only]: True,[HTTP only]: <*>
+2023-12-26 00:45:48.610000+00:00,2,WEBHIST,https://google.com/verify (SNID) Flags: [HTTP only]: True,[HTTP only]: <*>
+2023-12-26 00:45:48.610010+00:00,2,WEBHIST,https://google.com/verify (SNID) Flags: [HTTP only]: True,[HTTP only]: <*>
+2023-12-26 00:45:48.610010+00:00,2,WEBHIST,https://google.com/verify (SNID) Flags: [HTTP only]: True,[HTTP only]: <*>
+2023-12-26 00:45:52.536113+00:00,3,LOG,Prefetch [RUNTIMEBROKER.EXE] was executed - run count 6 path hints: \WINDOWS\SYSTEM32\RUNTIMEBROKER.EXE hash: 0x13F48958 volume: 1 [serial number: 0x5CE1DF5A  device path: \VOLUME{01da182ce1985a64-5ce1df5a}],\WINDOWS\SYSTEM32\RUNTIMEBROKER.EXE hash: <*> volume: 1 [serial number: 0x5CE1DF5A device path: \VOLUME{01da182ce1985a64-5ce1df5a}]
+2023-12-26 00:45:54.632798+00:00,3,LOG,Prefetch [RUNTIMEBROKER.EXE] was executed - run count 9 path hints: \WINDOWS\SYSTEM32\RUNTIMEBROKER.EXE hash: 0xA171222F volume: 1 [serial number: 0x5CE1DF5A  device path: \VOLUME{01da182ce1985a64-5ce1df5a}],\WINDOWS\SYSTEM32\RUNTIMEBROKER.EXE hash: <*> volume: 1 [serial number: 0x5CE1DF5A device path: \VOLUME{01da182ce1985a64-5ce1df5a}]
+2023-12-26 00:45:57.336000+00:00,2,WEBHIST,http://www.google.com/ (DV) Flags: [HTTP only]: False,[HTTP only]: <*>
+2023-12-26 00:45:57.336000+00:00,2,WEBHIST,http://www.google.com/ (DV) Flags: [HTTP only]: False,[HTTP only]: <*>
+2023-12-26 00:45:57.336000+00:00,2,WEBHIST,http://www.google.com/ (DV) Flags: [HTTP only]: False,[HTTP only]: <*>
+2023-12-26 00:45:57.336000+00:00,2,WEBHIST,http://www.google.com/ (DV) Flags: [HTTP only]: False,[HTTP only]: <*>
+2023-12-26 00:46:04.133000+00:00,2,WEBHIST,https://google.com/ (1P_JAR) Flags: [HTTP only]: False,[HTTP only]: <*>
+2023-12-26 00:46:04.133000+00:00,2,WEBHIST,https://google.com/ (1P_JAR) Flags: [HTTP only]: False,[HTTP only]: <*>
+2023-12-26 00:46:04.332000+00:00,2,WEBHIST,https://google.com/ (ANID) Flags: [HTTP only]: True,[HTTP only]: <*>
+2023-12-26 00:46:04.332000+00:00,2,WEBHIST,https://google.com/ (ANID) Flags: [HTTP only]: True,[HTTP only]: <*>
+2023-12-26 00:46:04.332000+00:00,2,WEBHIST,https://google.com/ (ANID) Flags: [HTTP only]: True,[HTTP only]: <*>
+2023-12-26 00:46:04.332000+00:00,2,WEBHIST,https://google.com/ (ANID) Flags: [HTTP only]: True,[HTTP only]: <*>

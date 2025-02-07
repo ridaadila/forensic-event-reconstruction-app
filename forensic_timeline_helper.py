@@ -2,9 +2,9 @@ import pandas as pd # type: ignore
 
 class ForensicTimelineHelper():
 
-    def filter_by_request(self, base_filename, output_file, source_filter, start_datetime, end_datetime):
+    def filter_by_request(self, base_filename, source_filter, start_datetime, end_datetime):
         input_file = base_filename + '.csv'
-        output_file = '12-search-sql-injection-fix.csv'
+        output_file = base_filename + '-fix.csv'
 
         data = pd.read_csv(input_file)
 
@@ -19,6 +19,11 @@ class ForensicTimelineHelper():
         selected_data['datetime'] = pd.to_datetime(selected_data['datetime'], errors='coerce')
         selected_data_ori['datetime'] = pd.to_datetime(selected_data_ori['datetime'], errors='coerce')
 
+        if(start_datetime == '' and end_datetime == ''):
+            selected_data.to_csv(output_file, index=False, header=False)
+            selected_data_ori.to_csv(base_filename + '-original.csv', index=False)
+            return
+        
         start_datetime = pd.to_datetime(start_datetime)
         end_datetime = pd.to_datetime(end_datetime)
 
@@ -46,8 +51,7 @@ class ForensicTimelineHelper():
             else:
                 return "Unknown"
 
-    def select_columns_used_for_episode_mining(self, base_filename):   
-        base_filename = 'webserver-2019-10-05'
+    def select_columns_used_for_episode_mining(self, base_filename): 
         df_ori = pd.read_csv(base_filename + '-mapping.csv')
 
         df_ori['epoch_time'] = None
@@ -68,7 +72,9 @@ class ForensicTimelineHelper():
         df_ori.to_csv(base_filename + '-selected_columns.csv', columns=columns_to_save, index=False)
         df_ori.to_csv(base_filename + '-mapping-edited.csv', columns=['datetime', 'cluster_id', 'source', 'message', 'abstract_message'], index=False)
 
-    def convert_forensic_timeline_into_episode_mining_input_format(self, csv_filename, txt_filename):
+    def convert_forensic_timeline_into_episode_mining_input_format(self, base_filename):
+        csv_filename = base_filename + '-selected_columns.csv'
+        txt_filename = base_filename + '-event-abstraction-for-episode.txt'
         df = pd.read_csv(csv_filename)
 
         epoch_time_clusters = df.groupby('epoch_time')['cluster_id'].apply(list).to_dict()
