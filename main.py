@@ -39,8 +39,9 @@ def index():
 @app.route('/execute')
 def execute():
     forensic_timeline = ForensicTimelineHelper()
-    forensic_timeline.filter_by_request()
     drain = DrainHelper()
+    
+    forensic_timeline.filter_by_request()
     drain.run()
     return "<p1>Sukses</p1>"
 
