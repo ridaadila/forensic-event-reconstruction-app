@@ -34,20 +34,28 @@ class ProcessMining():
         pm4py.save_vis_petri_net(net_heuristics, initial_marking_heuristics, final_marking_heuristics, 
                           vis_filename, rankdir=rankdir)
         
+        return net_heuristics, initial_marking_heuristics, final_marking_heuristics
+        
     def generate_petri_net_alpha(self, event_log, base_filename, rankdir):
         vis_filename = base_filename + '-petri-net-alpha.jpeg'
         net_alpha, initial_marking_alpha, final_marking_alpha = pm4py.discover_petri_net_alpha(event_log)
         pm4py.save_vis_petri_net(net_alpha, initial_marking_alpha, final_marking_alpha, vis_filename, rankdir=rankdir)
+
+        return net_alpha, initial_marking_alpha, final_marking_alpha
 
     def generate_petri_net_inductive_miner(self, event_log, base_filename, rankdir):
         vis_filename = base_filename + '-petri-net-inductive-miner.jpeg'
         net_inductive, initial_marking_inductive, final_marking_inductive = pm4py.discover_petri_net_inductive(event_log)
         pm4py.save_vis_petri_net(net_inductive, initial_marking_inductive, final_marking_inductive, vis_filename, rankdir=rankdir)
 
+        return net_inductive, initial_marking_inductive, final_marking_inductive
+
     def generate_petri_net_ilp_miner(self, event_log, base_filename, rankdir):
         vis_filename = base_filename + '-petri-net-ilp-miner.jpeg'
         net_ilp, initial_marking_ilp, final_marking_ilp = pm4py.discover_petri_net_ilp(event_log)
         pm4py.save_vis_petri_net(net_ilp, initial_marking_ilp, final_marking_ilp, vis_filename, rankdir=rankdir)
+
+        return net_ilp, initial_marking_ilp, final_marking_ilp
 
     def convert_to_bpmn(self, base_filename, net, initial_marking, final_marking, vis_filename):
         vis_filename = base_filename + '-bpmn-model.jpeg'

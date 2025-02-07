@@ -64,12 +64,40 @@ def execute():
 
     event_log = process_mining.format_df_into_pm4py_event_log(df)
 
-    process_mining.generate_petri_net_heuristics(event_log, base_filename, rankdir)
-    process_mining.generate_petri_net_alpha(event_log, base_filename, rankdir)
-    process_mining.generate_petri_net_inductive_miner(event_log, base_filename, rankdir)
-    process_mining.generate_petri_net_ilp_miner(event_log, base_filename, rankdir)
-    
-    return "<p1>Sukses</p1>"
+    net_heuristics, initial_marking_heuristics, final_marking_heuristics = process_mining.generate_petri_net_heuristics(event_log, base_filename, rankdir)
+    net_alpha, initial_marking_alpha, final_marking_alpha = process_mining.generate_petri_net_alpha(event_log, base_filename, rankdir)
+    net_inductive, initial_marking_inductive, final_marking_inductive = process_mining.generate_petri_net_inductive_miner(event_log, base_filename, rankdir)
+    net_ilp, initial_marking_ilp, final_marking_ilp = process_mining.generate_petri_net_ilp_miner(event_log, base_filename, rankdir)
+
+    evaluation_metrics_heuristics = {
+        "precision" : process_mining.get_precision(event_log, net_heuristics, initial_marking_heuristics, final_marking_heuristics),
+        "fitness" : process_mining.get_fitness(event_log, net_heuristics, initial_marking_heuristics, final_marking_heuristics),
+        "generalization" : process_mining.get_generalization(event_log, net_heuristics, initial_marking_heuristics, final_marking_heuristics),  
+        "simplicity" : process_mining.get_simplicity(net_heuristics)
+    }
+
+    evaluation_metrics_alpha = {
+        "precision" : process_mining.get_precision(event_log, net_alpha, initial_marking_alpha, final_marking_alpha),
+        "fitness" : process_mining.get_fitness(event_log, net_alpha, initial_marking_alpha, final_marking_alpha),
+        "generalization" : process_mining.get_generalization(event_log, net_alpha, initial_marking_alpha, final_marking_alpha),  
+        "simplicity" : process_mining.get_simplicity(net_alpha)
+    }
+
+    evaluation_metrics_inductive = {
+        "precision" : process_mining.get_precision(event_log, net_inductive, initial_marking_inductive, final_marking_inductive),
+        "fitness" : process_mining.get_fitness(event_log, net_inductive, initial_marking_inductive, final_marking_inductive),
+        "generalization" : process_mining.get_generalization(event_log, net_inductive, initial_marking_inductive, final_marking_inductive),  
+        "simplicity" : process_mining.get_simplicity(net_inductive)
+    }
+
+    evaluation_metrics_ilp = {
+        "precision" : process_mining.get_precision(event_log, net_ilp, initial_marking_ilp, final_marking_ilp),
+        "fitness" : process_mining.get_fitness(event_log, net_ilp, initial_marking_ilp, final_marking_ilp),
+        "generalization" : process_mining.get_generalization(event_log, net_ilp, initial_marking_ilp, final_marking_ilp),  
+        "simplicity" : process_mining.get_simplicity(net_ilp)
+    }
+
+    return evaluation_metrics_ilp
 
 if __name__ == '__main__':
     app.run(debug=True)
