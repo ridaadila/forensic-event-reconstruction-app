@@ -62,7 +62,7 @@ class ProcessMining():
         bpmn_model = pm4py.convert_to_bpmn(net, initial_marking, final_marking)
         pm4py.save_vis_bpmn(bpmn_model, vis_filename)
 
-    def get_token_replay_results(results):
+    def get_token_replay_results(self, results):
         print("-----------------------------TOKEN REPLAY-------------------------------------------")
         for i, result in enumerate(results):
             print(f"Trace {i + 1}:")
@@ -80,34 +80,39 @@ class ProcessMining():
             print(f"  Produced tokens: {result['produced_tokens']}")
             print("-" * 40)
 
-    def get_alignment_results(results):
-        print("------------------------------------ ALIGNMENTS ------------------------------------------")
+    def get_alignment_results(self, results):
+        output = []
+        output.append("------------------------------------ ALIGNMENTS ------------------------------------------\n")
+        
         for index, data in enumerate(results):
-            print(f"Trace {index + 1}:")
+            output.append(f"Trace {index + 1}:\n")
             counter = 1
 
             if 'alignment' in data:
                 for align in data['alignment']:
                     event_log_align = align[0]
                     model_process_align = align[1]
-                    print(f"  {counter}) Event log= {event_log_align} | Model process= {model_process_align}\n")
+                    output.append(f"  {counter}) Event log= {event_log_align} | Model process= {model_process_align}\n")
                     counter += 1
             
-            print("---------------")
-            print("Cost: ", data['cost'])
-            print("---------------")
-            print("Visited states: ", data['visited_states'])
-            print("---------------")
-            print("Queued states: ", data['queued_states'])
-            print("---------------")
-            print("Traversed arcs: ", data['traversed_arcs'])
-            print("---------------")
-            print("LP solved: ", data['lp_solved'])
-            print("---------------")
-            print("Fitness: ", data['fitness'])
-            print("---------------")
-            print("BWC: ", data['bwc'])
-            print("------------------------------------------------------------------------------------------")
+            output.append("---------------\n")
+            output.append(f"Cost: {data['cost']}\n")
+            output.append("---------------\n")
+            output.append(f"Visited states: {data['visited_states']}\n")
+            output.append("---------------\n")
+            output.append(f"Queued states: {data['queued_states']}\n")
+            output.append("---------------\n")
+            output.append(f"Traversed arcs: {data['traversed_arcs']}\n")
+            output.append("---------------\n")
+            output.append(f"LP solved: {data['lp_solved']}\n")
+            output.append("---------------\n")
+            output.append(f"Fitness: {data['fitness']}\n")
+            output.append("---------------\n")
+            output.append(f"BWC: {data['bwc']}\n")
+            output.append("------------------------------------------------------------------------------------------\n")
+        
+        return "".join(output)
+
 
     def get_fitness(self, event_log, net, initial_marking, final_marking):
         fitness = replay_fitness_evaluator.apply(event_log, net, initial_marking, final_marking, 
@@ -129,7 +134,7 @@ class ProcessMining():
     
     def get_alignment(self, event_log, net, initial_marking, final_marking):
         aligned_traces = alignments.apply(event_log, net, initial_marking, final_marking)
-        self.get_alignment_results(aligned_traces)
+        return self.get_alignment_results(aligned_traces)
     
     def get_replayed_traces(self, event_log, net, initial_marking, final_marking):
         replayed_traces = token_replay.apply(event_log, net, initial_marking, final_marking)

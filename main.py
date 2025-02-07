@@ -97,7 +97,9 @@ def execute():
         "simplicity" : process_mining.get_simplicity(net_ilp)
     }
 
-    return evaluation_metrics_ilp
+    alignment = process_mining.get_alignment(event_log, net_heuristics, initial_marking_heuristics, final_marking_heuristics)
+
+    return alignment.replace("\n", "<br>")
 
 if __name__ == '__main__':
     app.run(debug=True)
