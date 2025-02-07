@@ -5,6 +5,7 @@ from pm4py.algo.evaluation.replay_fitness import algorithm as replay_fitness_eva
 from pm4py.algo.evaluation.precision import algorithm as precision_evaluator # type: ignore
 from pm4py.algo.evaluation.generalization import algorithm as generalization_evaluator # type: ignore
 from pm4py.algo.evaluation.simplicity import algorithm as simplicity_evaluator # type: ignore
+
 class ProcessMining():
 
     def get_num_of_events_and_case(self, df):
@@ -38,6 +39,10 @@ class ProcessMining():
     def generate_petri_net_ilp_miner(self, event_log, vis_filename, rankdir):
         net_ilp, initial_marking_ilp, final_marking_ilp = pm4py.discover_petri_net_ilp(event_log)
         pm4py.save_vis_petri_net(net_ilp, initial_marking_ilp, final_marking_ilp, vis_filename, rankdir=rankdir)
+
+    def convert_to_bpmn(self, net, initial_marking, final_marking, vis_filename):
+        bpmn_model = pm4py.convert_to_bpmn(net, initial_marking, final_marking)
+        pm4py.save_vis_bpmn(bpmn_model, vis_filename)
 
     def get_token_replay_results(results):
         print("-----------------------------TOKEN REPLAY-------------------------------------------")
