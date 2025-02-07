@@ -2,15 +2,15 @@ import pandas as pd # type: ignore
 
 class ForensicTimelineHelper():
 
-    def filter_by_request(self):
-        input_file = '12-search-sql-injection.csv'
+    def filter_by_request(self, base_filename, output_file, source_filter, start_datetime, end_datetime):
+        input_file = base_filename + '.csv'
         output_file = '12-search-sql-injection-fix.csv'
 
         data = pd.read_csv(input_file)
 
         data_filtered = data[
             (data['source_long'] != 'File stat') & 
-            ((data['source'] == 'WEBHIST') | (data['source'] == 'log'))
+            (data['source'].isin(source_filter))
         ]
 
         selected_data = data_filtered[['datetime', 'message']]
@@ -19,8 +19,21 @@ class ForensicTimelineHelper():
         selected_data['datetime'] = pd.to_datetime(selected_data['datetime'], errors='coerce')
         selected_data_ori['datetime'] = pd.to_datetime(selected_data_ori['datetime'], errors='coerce')
 
-        selected_data.to_csv(output_file, index=False, header=False)
-        selected_data_ori.to_csv('12-search-sql-injection-original.csv', index=False)
+        start_datetime = pd.to_datetime(start_datetime)
+        end_datetime = pd.to_datetime(end_datetime)
+
+        valid_data_time_filtered = selected_data[
+            (selected_data['datetime'] >= start_datetime) & 
+            (selected_data['datetime'] <= end_datetime)
+        ]
+
+        valid_data_ori_time_filtered = selected_data_ori[
+            (selected_data_ori['datetime'] >= start_datetime) & 
+            (selected_data_ori['datetime'] <= end_datetime)
+        ]
+
+        valid_data_time_filtered.to_csv(output_file, index=False, header=False)
+        valid_data_ori_time_filtered.to_csv(base_filename + '-original.csv', index=False)
 
     def clean_abstract_message(self, text):
         special_characters = "<>^"
@@ -33,17 +46,15 @@ class ForensicTimelineHelper():
             else:
                 return "Unknown"
 
-    def select_columns_used_for_episode_mining(self):   
+    def select_columns_used_for_episode_mining(self, base_filename):   
         base_filename = 'webserver-2019-10-05'
         df_ori = pd.read_csv(base_filename + '-mapping.csv')
 
         df_ori['epoch_time'] = None
         df_ori['cleaned_message'] = None
 
-        # Konversi kolom 'datetime' ke format datetime
         df_ori['datetime'] = pd.to_datetime(df_ori['datetime'], format='mixed')
 
-        # Mengonversi datetime ke epoch time
         df_ori['epoch_time'] = df_ori['datetime'].apply(lambda x: int(x.timestamp()))
 
         df_ori['cleaned_message'] = df_ori['abstract_message'].apply(self.clean_abstract_message)

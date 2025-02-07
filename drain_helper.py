@@ -11,7 +11,7 @@ import pandas as pd # type: ignore
 
 class DrainHelper():
 
-    def run(self):
+    def run(self, base_file_name):
         logger = logging.getLogger(__name__)
         logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(message)s')
 
