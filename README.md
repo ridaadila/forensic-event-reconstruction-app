@@ -41,7 +41,7 @@ Once the application is running, open your browser and navigate to: http://127.0
 
 ### 3. View the Homepage
 The application will display the following homepage:
-![Alt text](./docs/homepage.png)
+
 
 ## References
 1) https://github.com/logpai/Drain3
