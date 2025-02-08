@@ -1,7 +1,118 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="jumbotron">
-  <h1>Welcome to our Adoption Page</h1>
-  <p>Please select one of the links from the nav bar.</p>
-</div>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forensic Event Reconstruction App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-lg">
+        <h2 class="text-xl font-semibold text-gray-700 text-center mb-6">Forensic Event Reconstruction</h2>
+        
+        <form action="/submit" method="POST" enctype="multipart/form-data" class="space-y-4">
+           <!-- Start Date -->
+           <div>
+                <label for="start_date" class="block text-sm font-medium text-gray-600">
+                    Start Date & Time <span class="text-gray-500">(Optional: Leave empty if not needed)</span>
+                </label>
+                <input type="datetime-local" id="start_date" name="start_date" 
+                    class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300">
+            </div>
+
+            <!-- End Date -->
+            <div>
+                <label for="end_date" class="block text-sm font-medium text-gray-600">
+                    End Date & Time <span class="text-gray-500">(Optional: Leave empty if not needed)</span>
+                </label>
+                <input type="datetime-local" id="end_date" name="end_date" 
+                    class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300">
+            </div>
+
+            <!-- File Upload (CSV Only) -->
+            <div>
+                <label for="file_upload" class="block text-sm font-medium text-gray-600">Upload File CSV</label>
+                <input type="file" id="file_upload" name="file_upload" accept=".csv" required 
+                    class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" onchange="processCSV(event)">
+            </div>
+
+            <!-- Checkbox Container for Distinct Sources -->
+            <div id="checkbox-container" class="mt-4">
+                <p class="text-sm text-gray-600">Select Sources:</p>
+                <div id="source-checkboxes" class="grid grid-cols-2 gap-2 mt-2"></div>
+            </div>
+
+            <!-- Minimum Support -->
+            <div>
+                <label for="min_support" class="block text-sm font-medium text-gray-600">Minimum Support</label>
+                <input type="number" id="min_support" name="min_support" required min="1" step="any"
+                    class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300">
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                    Submit
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+      function processCSV(event) {
+          const file = event.target.files[0];
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = function(e) {
+              const text = e.target.result;
+              const lines = text.split("\n").map(line => line.trim());
+              
+              if (lines.length < 2) {
+                  alert("CSV file must have at least one row of data.");
+                  return;
+              }
+
+              // Ambil header dan tentukan indeks kolom "source"
+              const headers = lines[0].split(",");
+              const sourceIndex = headers.indexOf("source");
+
+              if (sourceIndex === -1) {
+                  alert("CSV file must contain a 'source' column.");
+                  return;
+              }
+
+              // Ambil semua nilai "source" (distinct)
+              const sources = new Set();
+              for (let i = 1; i < lines.length; i++) {
+                  const values = lines[i].split(",");
+                  if (values.length > sourceIndex) {
+                      sources.add(values[sourceIndex].trim());
+                  }
+              }
+
+              // Tampilkan checkbox untuk setiap source
+              const checkboxContainer = document.getElementById("source-checkboxes");
+              checkboxContainer.innerHTML = ""; // Reset isi sebelumnya
+              
+              sources.forEach(source => {
+                  const checkbox = document.createElement("input");
+                  checkbox.type = "checkbox";
+                  checkbox.name = "selected_sources";
+                  checkbox.value = source;
+                  checkbox.className = "mr-2";
+                  
+                  const label = document.createElement("label");
+                  label.appendChild(checkbox);
+                  label.appendChild(document.createTextNode(source));
+                  label.className = "flex items-center space-x-2";
+
+                  checkboxContainer.appendChild(label);
+              });
+          };
+
+          reader.readAsText(file);
+      }
+  </script>
+</body>
+</html>
