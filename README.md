@@ -23,7 +23,7 @@ conda activate forensic-event-reconstruction-app
 git clone https://github.com/ridaadila/forensic-event-reconstruction-app.git
 ```
 
-### 4. Install requirements.txt
+### 4. Install requirements.txt in the root directory of the project
 
 ```bash
 pip install -r requirements.txt
@@ -31,7 +31,7 @@ pip install -r requirements.txt
 
 ## How to run
 
-### 1. Run the following command inside the virtualenv prompt:
+### 1. Run the following command inside the virtualenv in the root directory of the project:
 ```bash
 python main.py
 ```
