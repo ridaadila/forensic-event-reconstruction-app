@@ -1,6 +1,6 @@
 # Forensic Event Reconstruction App
 
-This application is designed to generate visualizations in the form of Petri Nets, display metric evaluations, and produce event sequences in the form of alignment traces. It utilizes process mining and episode mining techniques to reconstruct forensic events.
+This application is designed to generate visualizations in the form of Petri Nets, display metric evaluations, and produce event sequences in the form of alignment traces. It utilizes process mining and episode mining techniques to reconstruct forensic timeline.
 
 
 ## How to install
