@@ -82,7 +82,9 @@ class ProcessMining():
 
     def get_alignment_results(self, results):
         output = []
-        output.append("------------------------------------ ALIGNMENTS ------------------------------------------\n")
+        alignment_text = "ALIGNMENTS"
+        output.append(alignment_text.center(80))  # Menyusun teks agar rata tengah dengan panjang 80 karakter
+        output.append("\n")
         
         for index, data in enumerate(results):
             output.append(f"Trace {index + 1}:\n")
