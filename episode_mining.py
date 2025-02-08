@@ -5,7 +5,7 @@ class EpisodeMining():
 
     def run(self, base_filename, minsup, algo):
         txt_filename = base_filename + '-event-abstraction-for-episode.txt'
-        winlen = 45
+        winlen = 15
         output_filename = "output-" + base_filename + "-" + algo + "-minsup-" + str(minsup) + ".txt"
         spmf = Spmf(algo, input_filename=txt_filename,
                     output_filename=output_filename, spmf_bin_location_dir="./", arguments=[minsup, winlen, 0])

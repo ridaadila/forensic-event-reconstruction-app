@@ -16,7 +16,6 @@ class DrainHelper():
         logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(message)s')
 
         in_gz_file = "SSH.tar.gz"
-        base_file_name = "12-search-sql-injection"
         in_log_file = base_file_name + "-fix.csv"
         if not os.path.isfile(in_log_file):
             logger.info(f"Downloading file {in_gz_file}")

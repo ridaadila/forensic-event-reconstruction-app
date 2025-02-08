@@ -3,7 +3,7 @@ import os
 
 class ForensicTimelineHelper():
 
-    def filter_by_request(self, base_filename, source_filter, start_datetime, end_datetime):
+    def filter_by_request(self, base_filename, source_filter, start_date, end_date, start_time, end_time):
         input_file = base_filename + '.csv'
         output_file = base_filename + '-fix.csv'
 
@@ -20,22 +20,32 @@ class ForensicTimelineHelper():
         selected_data['datetime'] = pd.to_datetime(selected_data['datetime'], errors='coerce')
         selected_data_ori['datetime'] = pd.to_datetime(selected_data_ori['datetime'], errors='coerce')
 
-        if(start_datetime == '' and end_datetime == ''):
+        if((start_date is None) and (end_date is None)):
             selected_data.to_csv(output_file, index=False, header=False)
             selected_data_ori.to_csv(base_filename + '-original.csv', index=False)
             return
-        
-        start_datetime = pd.to_datetime(start_datetime)
-        end_datetime = pd.to_datetime(end_datetime)
 
-        valid_data_time_filtered = selected_data[
-            (selected_data['datetime'] >= start_datetime) & 
-            (selected_data['datetime'] <= end_datetime)
+        valid_data = selected_data[
+            (selected_data['datetime'].dt.date >= pd.to_datetime(start_date).date()) & 
+            (selected_data['datetime'].dt.date <= pd.to_datetime(end_date).date())
         ]
 
-        valid_data_ori_time_filtered = selected_data_ori[
-            (selected_data_ori['datetime'] >= start_datetime) & 
-            (selected_data_ori['datetime'] <= end_datetime)
+        valid_data_ori = selected_data_ori[
+           (selected_data_ori['datetime'].dt.date >= pd.to_datetime(start_date).date()) &
+           (selected_data_ori['datetime'].dt.date <= pd.to_datetime(end_date).date())
+        ]
+
+        start_time = pd.to_datetime(start_time).time()
+        end_time = pd.to_datetime(end_time).time()
+
+        valid_data_time_filtered = valid_data[
+            (valid_data['datetime'].dt.time >= start_time) & 
+            (valid_data['datetime'].dt.time <= end_time)
+        ]
+        
+        valid_data_ori_time_filtered = valid_data_ori[
+            (valid_data_ori['datetime'].dt.time >= start_time) & 
+            (valid_data_ori['datetime'].dt.time <= end_time)
         ]
 
         valid_data_time_filtered.to_csv(output_file, index=False, header=False)
@@ -90,6 +100,7 @@ class ForensicTimelineHelper():
 
     def remove_files(self, base_filename, minsup):
         files = [
+            base_filename + ".csv",
             base_filename + "-event-abstraction-for-episode.txt",
             base_filename + "-event-abstraction.csv",
             base_filename + "-fix.csv",
