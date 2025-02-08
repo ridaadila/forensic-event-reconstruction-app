@@ -98,8 +98,11 @@ def execute():
     }
 
     alignment = process_mining.get_alignment(event_log, net_heuristics, initial_marking_heuristics, final_marking_heuristics)
+    alignment = alignment.replace("\n", "<br>")
 
-    return alignment.replace("\n", "<br>")
+    forensic_timeline.remove_files(base_filename, minsup)
+
+    return "sukses"
 
 if __name__ == '__main__':
     app.run(debug=True)

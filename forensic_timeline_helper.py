@@ -1,4 +1,5 @@
 import pandas as pd # type: ignore
+import os
 
 class ForensicTimelineHelper():
 
@@ -86,3 +87,21 @@ class ForensicTimelineHelper():
         result_df = result_df[['cluster_id', 'epoch_time']]
 
         result_df.to_csv(txt_filename, sep='|', header=False, index=False)
+
+    def remove_files(self, base_filename, minsup):
+        files = [
+            base_filename + "-event-abstraction-for-episode.txt",
+            base_filename + "-event-abstraction.csv",
+            base_filename + "-fix.csv",
+            base_filename + "-mapping-edited.csv",
+            base_filename + "-mapping.csv",
+            base_filename + "-original.csv",
+            base_filename + "-selected_columns.csv",
+            base_filename + "-with-case-id.csv", 
+            "output-" + base_filename + "-MINEPI+-minsup-" + str(minsup) + ".txt"
+        ]
+
+        for file in files:
+            if os.path.exists(file):
+                os.remove(file)
+        
