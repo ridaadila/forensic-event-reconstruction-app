@@ -26,7 +26,7 @@ git clone https://github.com/ridaadila/forensic-event-reconstruction-app.git
 ### 4. Install requirements.txt
 
 ```bash
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 ## How to run
