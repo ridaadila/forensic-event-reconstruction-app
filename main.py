@@ -1,38 +1,19 @@
 import os
 from drain_helper import DrainHelper
 from episode_mining import EpisodeMining
-from flask import Flask, render_template, send_from_directory, abort, flash, request, redirect, session, url_for # type: ignore
+from flask import Flask, jsonify, render_template, send_from_directory, abort, flash, request, redirect, session, url_for # type: ignore
 from flask_wtf import FlaskForm # type: ignore
 from flask_sqlalchemy import SQLAlchemy # type: ignore
 from wtforms import StringField, SubmitField, BooleanField, DateTimeField, RadioField, SelectField # type: ignore
 from wtforms.validators import DataRequired # type: ignore
 import pandas as pd # type: ignore
 from datetime import datetime
-
+from werkzeug.utils import secure_filename # type: ignore
 from forensic_timeline_helper import ForensicTimelineHelper
 from process_mining import ProcessMining
 
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-
 app = Flask(__name__)
-
-app.config['SECRET_KEY'] = 'mysecretkey'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'data.sqlite') 
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db  = SQLAlchemy(app)
-
-class User(db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-
-    def __init__(self, name):
-        self.name = name
-
-    def __repr__(self):
-        return f"User {self.name}"
 
 @app.route('/')
 def index():
@@ -43,19 +24,37 @@ def download_image(filename):
     IMAGE_FOLDER = os.path.join(os.getcwd(), "static", "images")
     return send_from_directory(IMAGE_FOLDER, filename + ".jpeg", as_attachment=True)
 
-@app.route('/execute')
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+@app.route('/execute', methods=['POST'])
 def execute():
+    UPLOAD_FOLDER = '.'
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
+
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    app.config['ALLOWED_EXTENSIONS'] = {'csv'}
+
+    file = request.files.get('file_upload')
+    if not file or not allowed_file(file.filename):
+        return jsonify({'error': 'File must be in CSV format'}), 400
+        
+    filename = secure_filename(file.filename)
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(filepath)
+
+    base_filename = os.path.splitext(filename)[0]
+    source_filter = request.form.getlist('selected_sources')
+    start_datetime = request.form.get('start_date')
+    end_datetime = request.form.get('end_date')
+    rankdir = 'LR'
+    minsup = request.form.get('min_support')
+
     forensic_timeline = ForensicTimelineHelper()
     drain = DrainHelper()
     episode_mining = EpisodeMining()
     process_mining = ProcessMining()
-
-    base_filename = '12-search-sql-injection'
-    source_filter = ['WEBHIST', 'LOG']
-    start_datetime = ''
-    end_datetime = ''
-    rankdir = 'LR'
-    minsup = 1
     
     forensic_timeline.filter_by_request(base_filename, source_filter, start_datetime, end_datetime)
     drain.run(base_filename)
