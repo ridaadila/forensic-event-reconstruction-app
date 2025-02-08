@@ -1,7 +1,7 @@
 import os
 from drain_helper import DrainHelper
 from episode_mining import EpisodeMining
-from flask import Flask, render_template, flash, request, redirect, session, url_for # type: ignore
+from flask import Flask, render_template, send_from_directory, abort, flash, request, redirect, session, url_for # type: ignore
 from flask_wtf import FlaskForm # type: ignore
 from flask_sqlalchemy import SQLAlchemy # type: ignore
 from wtforms import StringField, SubmitField, BooleanField, DateTimeField, RadioField, SelectField # type: ignore
@@ -37,6 +37,11 @@ class User(db.Model):
 @app.route('/')
 def index():
     return render_template('home.html')
+
+@app.route('/download/<filename>', methods=['GET'])
+def download_image(filename):
+    IMAGE_FOLDER = os.path.join(os.getcwd(), "static", "images")
+    return send_from_directory(IMAGE_FOLDER, filename + ".jpeg", as_attachment=True)
 
 @app.route('/execute')
 def execute():
