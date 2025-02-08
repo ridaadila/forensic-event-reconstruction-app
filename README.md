@@ -1,6 +1,7 @@
 # Forensic Event Reconstruction App
 
-A brief description of How to Install & Use Forensic Event Reconstruction App.
+This application is designed to generate visualizations in the form of Petri Nets, display metric evaluations, and produce event sequences in the form of alignment traces. It utilizes process mining and episode mining techniques to reconstruct forensic events.
+
 
 ## How to install
 
@@ -42,5 +43,8 @@ Once the application is running, open your browser and navigate to: http://127.0
 The application will display the following homepage:
 
 ![Alt text](./docs/homepage.png)
+
+## References
+1) https://github.com/logpai/Drain3 : for extracts the abstracts message
 
 
