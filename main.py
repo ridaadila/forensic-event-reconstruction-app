@@ -73,40 +73,50 @@ def execute():
     net_inductive, initial_marking_inductive, final_marking_inductive = process_mining.generate_petri_net_inductive_miner(event_log, base_filename, rankdir)
     net_ilp, initial_marking_ilp, final_marking_ilp = process_mining.generate_petri_net_ilp_miner(event_log, base_filename, rankdir)
 
-    evaluation_metrics_heuristics = {
-        "precision" : process_mining.get_precision(event_log, net_heuristics, initial_marking_heuristics, final_marking_heuristics),
-        "fitness" : process_mining.get_fitness(event_log, net_heuristics, initial_marking_heuristics, final_marking_heuristics),
-        "generalization" : process_mining.get_generalization(event_log, net_heuristics, initial_marking_heuristics, final_marking_heuristics),  
-        "simplicity" : process_mining.get_simplicity(net_heuristics)
+    evaluation_metrics = {
+        "Alpha Miner" : {
+            "Precision" : process_mining.get_precision(event_log, net_alpha, initial_marking_alpha, final_marking_alpha),
+            "Fitness" : process_mining.get_fitness(event_log, net_alpha, initial_marking_alpha, final_marking_alpha),
+            "Generalization" : process_mining.get_generalization(event_log, net_alpha, initial_marking_alpha, final_marking_alpha),  
+            "Simplicity" : process_mining.get_simplicity(net_alpha)
+        }, 
+        "Heuristics Miner" : {
+            "Precision" : process_mining.get_precision(event_log, net_heuristics, initial_marking_heuristics, final_marking_heuristics),
+            "Fitness" : process_mining.get_fitness(event_log, net_heuristics, initial_marking_heuristics, final_marking_heuristics),
+            "Generalization" : process_mining.get_generalization(event_log, net_heuristics, initial_marking_heuristics, final_marking_heuristics),  
+            "Simplicity" : process_mining.get_simplicity(net_heuristics)
+        },
+        "Inductive Miner" : {
+            "Precision" : process_mining.get_precision(event_log, net_inductive, initial_marking_inductive, final_marking_inductive),
+            "Fitness" : process_mining.get_fitness(event_log, net_inductive, initial_marking_inductive, final_marking_inductive),
+            "Generalization" : process_mining.get_generalization(event_log, net_inductive, initial_marking_inductive, final_marking_inductive),  
+            "Simplicity" : process_mining.get_simplicity(net_inductive)
+        },
+        "ILP Miner" : {
+            "Precision" : process_mining.get_precision(event_log, net_ilp, initial_marking_ilp, final_marking_ilp),
+            "Fitness" : process_mining.get_fitness(event_log, net_ilp, initial_marking_ilp, final_marking_ilp),
+            "Generalization" : process_mining.get_generalization(event_log, net_ilp, initial_marking_ilp, final_marking_ilp),  
+            "Simplicity" : process_mining.get_simplicity(net_ilp)
+        }
     }
 
-    evaluation_metrics_alpha = {
-        "precision" : process_mining.get_precision(event_log, net_alpha, initial_marking_alpha, final_marking_alpha),
-        "fitness" : process_mining.get_fitness(event_log, net_alpha, initial_marking_alpha, final_marking_alpha),
-        "generalization" : process_mining.get_generalization(event_log, net_alpha, initial_marking_alpha, final_marking_alpha),  
-        "simplicity" : process_mining.get_simplicity(net_alpha)
+    alignments = {
+        "Alpha Miner": process_mining.get_alignment(event_log, net_alpha, initial_marking_alpha, final_marking_alpha),
+        "Heuristics Miner": process_mining.get_alignment(event_log, net_heuristics, initial_marking_heuristics, final_marking_heuristics),
+        "Inductive Miner": process_mining.get_alignment(event_log, net_inductive, initial_marking_inductive, final_marking_inductive),  
+        "ILP Miner": process_mining.get_alignment(event_log, net_ilp, initial_marking_ilp, final_marking_ilp)
     }
 
-    evaluation_metrics_inductive = {
-        "precision" : process_mining.get_precision(event_log, net_inductive, initial_marking_inductive, final_marking_inductive),
-        "fitness" : process_mining.get_fitness(event_log, net_inductive, initial_marking_inductive, final_marking_inductive),
-        "generalization" : process_mining.get_generalization(event_log, net_inductive, initial_marking_inductive, final_marking_inductive),  
-        "simplicity" : process_mining.get_simplicity(net_inductive)
+    list_of_images = {
+        "Alpha Miner" : base_filename + '-petri-net-alpha.jpeg',
+        "Heuristics Miner" : base_filename + '-petri-net-heuristics.jpeg',
+        "Inductive Miner" : base_filename + '-petri-net-inductive-miner.jpeg',
+        "ILP Miner" : base_filename + '-petri-net-ilp-miner.jpeg',
     }
-
-    evaluation_metrics_ilp = {
-        "precision" : process_mining.get_precision(event_log, net_ilp, initial_marking_ilp, final_marking_ilp),
-        "fitness" : process_mining.get_fitness(event_log, net_ilp, initial_marking_ilp, final_marking_ilp),
-        "generalization" : process_mining.get_generalization(event_log, net_ilp, initial_marking_ilp, final_marking_ilp),  
-        "simplicity" : process_mining.get_simplicity(net_ilp)
-    }
-
-    alignment = process_mining.get_alignment(event_log, net_heuristics, initial_marking_heuristics, final_marking_heuristics)
-    alignment = alignment.replace("\n", "<br>")
 
     forensic_timeline.remove_files(base_filename, minsup)
 
-    return "sukses"
+    return render_template('show.html', images=list_of_images, evaluation_metrics=evaluation_metrics, alignments=alignments)
 
 if __name__ == '__main__':
     app.run(debug=True)
