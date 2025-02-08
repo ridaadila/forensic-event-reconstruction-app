@@ -44,7 +44,7 @@ The application will display the following homepage:
 ![Alt text](./docs/homepage.png)
 
 ## References
-1) https://github.com/logpai/Drain3 : for extracts the abstracts message
+1) https://github.com/logpai/Drain3
 2) https://www.philippe-fournier-viger.com/spmf/index.php?link=documentation.php
 3) https://github.com/process-intelligence-solutions/pm4py
 
